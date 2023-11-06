@@ -1,7 +1,13 @@
 import { Formik, Field, Form } from 'formik';
 import { FilterContainer } from './Filter.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeFilter } from 'redux/filterSlice';
 
-export const Filter = ({ inputValue, handleChange }) => {
+export const Filter = () => {
+  const dispatch = useDispatch();
+  const filterValue = useSelector(state => state.filter.filter);
+  const handleChange = e => dispatch(changeFilter(e.target.value));
+
   return (
     <FilterContainer>
       <p>Find contacts by name</p>
@@ -11,7 +17,6 @@ export const Filter = ({ inputValue, handleChange }) => {
         }}
         onSubmit={(values, actions) => {
           console.log(values);
-          //actions.resetForm();
         }}
       >
         <Form>
@@ -21,7 +26,7 @@ export const Filter = ({ inputValue, handleChange }) => {
               id="search"
               name="search"
               placeholder="John Doe"
-              value={inputValue}
+              value={filterValue}
               onChange={handleChange}
             />
           </div>

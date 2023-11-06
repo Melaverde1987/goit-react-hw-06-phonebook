@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { useSelector } from 'react-redux';
 
 const getLocalContacts = () => {
   const savedContacts = localStorage.getItem('contact-item');
@@ -14,10 +15,9 @@ const getLocalContacts = () => {
 
 export const App = () => {
   const [contacts, setContacts] = useState(getLocalContacts);
-  const [filter, setFilter] = useState('');
+  const filterValue = useSelector(state => state.filter.filter);
 
   useEffect(() => {
-    console.log('use', contacts);
     localStorage.setItem('contact-item', JSON.stringify(contacts));
   }, [contacts]);
 
@@ -41,13 +41,8 @@ export const App = () => {
     );
   };
 
-  const onFilter = evt => {
-    let name = evt.target.value;
-    setFilter(name);
-  };
-
   const visibleContacts = contacts.filter(contact => {
-    const normalizedFilter = filter.toLowerCase();
+    const normalizedFilter = filterValue.toLowerCase();
     return contact.name.toLowerCase().includes(normalizedFilter);
   });
 
@@ -58,7 +53,7 @@ export const App = () => {
       <h1>Phonebook</h1>
       <ContactForm onAdd={addContact} />
       <h2>Contacts</h2>
-      <Filter inputValue={filter} handleChange={onFilter} />
+      <Filter />
       {visibleContacts.length > 0 && (
         <ContactList contacts={visibleContacts} onDelete={deleteContact} />
       )}
